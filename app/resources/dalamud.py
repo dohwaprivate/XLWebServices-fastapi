@@ -12,7 +12,7 @@ from app.utils.tasks import regen
 router = APIRouter()
 
 api_secret = get_settings().ga_api_secret
-measurement_id = "G-W3HJPGVM1J"
+measurement_id = "G-S8H7WXXWYJ"
 
 class Analytics(BaseModel):
     client_id: str
