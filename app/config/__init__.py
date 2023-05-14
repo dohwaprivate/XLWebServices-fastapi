@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     redis_host: str = 'localhost'
     redis_port: str = '6379'
     redis_prefix: str = 'xlweb-fastapi|'
-    hosted_url: str = 'https://aonyx.ffxiv.wang'
+    hosted_url: str = 'https://xlweb.onrender.io' #base but will changed by .env settings
     github_token: str = ''
     cache_clear_key: str = ''
     xivl_repo: str = ''
