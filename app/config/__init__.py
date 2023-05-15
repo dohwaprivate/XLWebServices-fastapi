@@ -29,11 +29,11 @@ class Settings(BaseSettings):
         7: 'plugin-PluginDistD17-main'
     }
     # CDN
-    cdn_list: List[str] = []
+    cdn_list: List[str] = ['cloudflare']
     cf_token: str = ''
     cf_zone_id: str = ''
-    ctcdn_ak: str = ''
-    ctcdn_sk: str = ''
+    ctcdn_ak: str = '123'
+    ctcdn_sk: str = '123'
     # Crowdin
     crowdin_token: str = ''
     crowdin_project_name: str = 'Dalamud Plugins'
