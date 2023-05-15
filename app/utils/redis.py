@@ -2,21 +2,17 @@ import redis
 from .common import get_settings
 from logs import logger
 
-r = redis.from_url(os.environ['REDIS_URL'])
-
 class Redis():
     @staticmethod
     def create_client():
         settings = get_settings()
-        return redis.Redis(host=r, port=settings.redis_port, db=0, decode_responses=True)
-        # return redis.Redis(host=settings.redis_host, port=settings.redis_port, db=0, decode_responses=True)
+        return redis.Redis(host=settings.redis_url, port=settings.redis_port, db=0, decode_responses=True)
 
 class RedisFeedBack():
     @staticmethod
     def create_client():
         settings = get_settings()
-        return redis.Redis(host=r, port=settings.redis_port, db=1, decode_responses=True)
-        # return redis.Redis(host=settings.redis_host, port=settings.redis_port, db=1, decode_responses=True)
+        return redis.Redis(host=settings.redis_url, port=settings.redis_port, db=1, decode_responses=True)
 
 
 def load_plugin_count(plugin_count):

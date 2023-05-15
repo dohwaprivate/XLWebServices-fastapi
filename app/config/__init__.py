@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     file_cache_dir: str = "cache"
     repo_cache_dir: str = "repo"
     redis_host: str = 'localhost'
+    redis_url: str = ''
     redis_port: str = '6379'
     redis_prefix: str = 'xlweb-fastapi|'
     hosted_url: str = 'https://xlweb.onrender.io' #base but will changed by .env settings
