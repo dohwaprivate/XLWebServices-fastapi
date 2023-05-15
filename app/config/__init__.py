@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     redis_host: str = 'localhost'
     redis_url: str = ''
     redis_port: str = '6379'
-    redis_prefix: str = 'xlweb-fastapi|'
+    redis_prefix: str = 'xlweb|'
     hosted_url: str = 'https://xlweb.onrender.io' #base but will changed by .env settings
     github_token: str = ''
     cache_clear_key: str = ''
