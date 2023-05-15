@@ -35,7 +35,7 @@ async def dalamud_assets(settings: Settings = Depends(get_settings)):
 
 
 @router.get("/Release/VersionInfo")
-async def dalamud_release(settings: Settings = Depends(get_settings), track: str = "release"):
+async def dalamud_release(settings: Settings = Depends(get_settings), track: str = "staging"):
     if track == "staging":
         track = "stg"
     if not track:
