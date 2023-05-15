@@ -132,5 +132,5 @@ async def feedback(feedback: FeedBack, settings: Settings = Depends(get_settings
     order_id = r.incr(f'{settings.redis_prefix}feedback-order-id')  # 自增生成唯一id
     r_fb.hincrby(f'{settings.redis_prefix}feedback-count', name)  # 记录每个插件现有的反馈数
     r_fb.hmset(f'feedback|{dhash}|{name}|{order_id}', feedback_dict)
-    await httpx_client.post('https://xn--v9x.net/dalamud/feedback', json={'content': content, 'name': name, 'dhash': dhash, 'version': version, 'reporter': reporter})
+    await httpx_client.post('https://jjae.xyz/dalamud/feedback', json={'content': content, 'name': name, 'dhash': dhash, 'version': version, 'reporter': reporter})
     return {'message': 'Feedback was submitted.', 'status': 'success', 'order_id': order_id}

@@ -8,12 +8,12 @@ app = get_app()
 
 def cli():
     parser = argparse.ArgumentParser(description='XLWeb-fastapi')
-    subparsers = parser.add_subparsers(metavar='子命令')
+    subparsers = parser.add_subparsers(metavar='chi')
 
-    start_server = subparsers.add_parser('start', help='启动服务器')
+    start_server = subparsers.add_parser('start', help='start')
     start_server.set_defaults(handle=start_server_func)
 
-    init_server = subparsers.add_parser('init', help='初始化服务器')
+    init_server = subparsers.add_parser('init', help='init')
     init_server.set_defaults(handle=init_server_func)
 
     args = parser.parse_args()
