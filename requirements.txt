@@ -58,7 +58,6 @@ wrapt==1.14.1
 crowdin-api-client==1.7.0
 
 
-# 
 greenlet
 eventlet
 gevent

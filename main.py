@@ -8,12 +8,12 @@ app = get_app()
 
 def cli():
     parser = argparse.ArgumentParser(description='XLWeb-fastapi')
-    subparsers = parser.add_subparsers(metavar='chi')
+    subparsers = parser.add_subparsers(metavar='子命令')
 
-    start_server = subparsers.add_parser('start', help='start')
+    start_server = subparsers.add_parser('start', help='启动服务器')
     start_server.set_defaults(handle=start_server_func)
 
-    init_server = subparsers.add_parser('init', help='init')
+    init_server = subparsers.add_parser('init', help='初始化服务器')
     init_server.set_defaults(handle=init_server_func)
 
     args = parser.parse_args()
@@ -31,10 +31,9 @@ def start_server_func(args):
 
 def init_server_func(args):
     from app.utils.tasks import regen
-    regen(['dalamud', 'dalamud_changelog', 'asset', 'plugin', 'xivlauncher'])
+    regen(['dalamud', 'dalamud_changelog', 'asset', 'plugin', 'xivlauncher', 'updater'])
     from app.utils.tasks import regen_pluginmaster
-    regen_pluginmaster(
-        repo_url="https://github.com/dohwacorp/DalamudPlugins.git")
+    regen_pluginmaster(repo_url="https://github.com/dohwaprivate/PluginDistD17.git")
 
 
 if __name__ == '__main__':

@@ -1,10 +1,11 @@
+import os
 import json
 from pydantic import BaseModel
 from fastapi import APIRouter, HTTPException, Depends, Query, BackgroundTasks
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, PlainTextResponse
 from app.utils import httpx_client
 from app.config import Settings
-from app.utils.common import get_settings
+from app.utils.common import get_settings, get_tos_content, get_tos_hash
 from app.utils.redis import Redis
 
 from app.utils.tasks import regen
@@ -18,10 +19,11 @@ class Analytics(BaseModel):
     client_id: str
     user_id: str
     server_id: str
-    banned_plugin_length: str
     os: str
+    cheat_banned_hash: str = ""
     dalamud_version: str = ""
     is_testing: bool = None
+    plugin_count: int
 
 
 @router.get("/Asset/Meta")
@@ -35,7 +37,7 @@ async def dalamud_assets(settings: Settings = Depends(get_settings)):
 
 
 @router.get("/Release/VersionInfo")
-async def dalamud_release(settings: Settings = Depends(get_settings), track: str = "staging"):
+async def dalamud_release(settings: Settings = Depends(get_settings), track: str = "release"):
     if track == "staging":
         track = "stg"
     if not track:
@@ -99,6 +101,11 @@ async def asset_clear_cache(background_tasks: BackgroundTasks, key: str = Query(
 @router.post("/Analytics/Start")
 async def analytics_start(analytics: Analytics, settings: Settings = Depends(get_settings)):
     url = f"https://www.google-analytics.com/mp/collect?measurement_id={measurement_id}&api_secret={api_secret}"
+    r = Redis.create_client()
+    cheatplugin_hash = r.hget(f'{settings.redis_prefix}asset', 'cheatplugin_hash')
+    cheatplugin_hash_sha256 = r.hget(f'{settings.redis_prefix}asset', 'cheatplugin_hash_sha256')
+    cheat_banned_hash_valid = analytics.cheat_banned_hash and \
+        (cheatplugin_hash == analytics.cheat_banned_hash or cheatplugin_hash_sha256 == analytics.cheat_banned_hash)
     data = {
         "client_id": analytics.client_id,
         "user_id": analytics.user_id,
@@ -106,8 +113,8 @@ async def analytics_start(analytics: Analytics, settings: Settings = Depends(get
             "HomeWorld": {
                 "value": analytics.server_id
             },
-            "Banned_Plugin_Length": {
-                "value": analytics.banned_plugin_length
+            "Cheat_Banned_Hash_Valid": {
+                "value": cheat_banned_hash_valid
             },
             "Client": {
                 "value": analytics.client_id,
@@ -120,6 +127,9 @@ async def analytics_start(analytics: Analytics, settings: Settings = Depends(get
             },
             "is_testing": {
                 "value": analytics.is_testing
+            },
+            "plugin_count": {
+                "value": analytics.plugin_count
             }
         },
         'events': [{
@@ -127,9 +137,29 @@ async def analytics_start(analytics: Analytics, settings: Settings = Depends(get
             "params": {
                 "server_id": analytics.server_id,
                 "engagement_time_msec": "100",
-                "session_id": analytics.user_id  # 复用user_id，确保会话角色唯一
+                "session_id": analytics.client_id
             }
         }]
     }
     await httpx_client.post(url, json=data)
+    return {'message': 'OK'}
+
+
+@router.get("/TOS")
+async def dalamud_tos(tosHash: bool=False, settings: Settings = Depends(get_settings)):
+    if tosHash:
+        tos_hash = get_tos_hash()
+        return {'message': 'OK', 'tosHash': tos_hash.upper()}
+    tos_content = get_tos_content()
+    return PlainTextResponse(tos_content)
+
+
+class StgCode(BaseModel):
+    code: str
+
+
+@router.post("/Check/StgCode")
+async def check_stg_code(StgCode: StgCode, settings: Settings = Depends(get_settings)):
+    if StgCode.code != settings.stg_code:
+        raise HTTPException(status_code=400, detail="Invalid code")
     return {'message': 'OK'}

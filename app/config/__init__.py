@@ -12,15 +12,15 @@ class Settings(BaseSettings):
     file_cache_dir: str = "cache"
     repo_cache_dir: str = "repo"
     redis_host: str = 'localhost'
-    redis_url: str = ''
     redis_port: str = '6379'
     redis_prefix: str = 'xlweb-fastapi|'
-    hosted_url: str = 'https://xlweb.onrender.io' #base but will changed by .env settings
+    hosted_url: str = 'http://xivpf.xyz'
     github_token: str = ''
     cache_clear_key: str = ''
     xivl_repo: str = ''
     dalamud_repo: str = ''
     distrib_repo: str = ''
+    updater_repo: str = ''
     dalamud_format: str = 'zip'  # zip or 7z
     asset_repo: str = ''
     plugin_repo: str = ''
@@ -30,11 +30,11 @@ class Settings(BaseSettings):
         7: 'plugin-PluginDistD17-main'
     }
     # CDN
-    cdn_list: List[str] = ['cloudflare']
+    cdn_list: List[str] = []
     cf_token: str = ''
     cf_zone_id: str = ''
-    ctcdn_ak: str = '123'
-    ctcdn_sk: str = '123'
+    ctcdn_ak: str = ''
+    ctcdn_sk: str = ''
     # Crowdin
     crowdin_token: str = ''
     crowdin_project_name: str = 'Dalamud Plugins'
@@ -43,6 +43,15 @@ class Settings(BaseSettings):
     ga_api_secret: str = ''
     # Plogon
     plogon_api_key: str = ''
+    # stg code
+    stg_code: str = ''
+    # ottercloud cdn
+    ottercloud_cdn_host = ''
+    ottercloud_cdn_id = ''
+    ottercloud_cdn_key = ''
+    # OtterBot Web JSON
+    otterbot_web_json: int = 0
+    updater_safe_mode: bool = False
 
     class Config:
         env_file = '.env'
@@ -58,6 +67,8 @@ SENSITIVE_FIELDS = [
     'crowdin_token',
     'api_secret',
     'plogon_api_key',
+    'ottercloud_cdn_id',
+    'ottercloud_cdn_key',
 ]
 settings_json = Settings().dict()
 for field in SENSITIVE_FIELDS:
